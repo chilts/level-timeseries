@@ -1,0 +1,24 @@
+{
+  "name": "level-timeseries",
+  "description": "A pluggable timeseries DB built on top of LevelDB.",
+  "version": "1.0.0",
+  "main": "timeseries.js",
+  "scripts": {
+    "test": "tap"
+  },
+  "devDependencies": {
+    "level": "^7.0.0",
+    "subleveldown": "^5.0.1",
+    "tap": "^15.0.9"
+  },
+  "author": "Andrew Chilton",
+  "keywords": [
+    "level",
+    "leveldb",
+    "timeseries",
+    "ts",
+    "iot",
+    "internet-of-things"
+  ],
+  "license": "Apache2"
+}
