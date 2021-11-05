@@ -1,7 +1,7 @@
 {
   "name": "level-timeseries",
   "description": "A pluggable timeseries DB built on top of LevelDB.",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "main": "timeseries.js",
   "scripts": {
     "test": "tap"
