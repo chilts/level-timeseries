@@ -58,32 +58,47 @@ class TimeSeries {
     const valDb = this.getValDb(name)
     const aggDb = sublevel(this.getAggDb(name), prettyPeriodMs, { valueEncoding: 'json' })
 
-    let oldTs = null
+    let doneTs = null
     let currentTs = null
     return valDb.createReadStream()
       .on('data', data => {
         console.log('data:', data)
-        aggregator.add(data.value)
 
+        // check the timestamp
         const timestamp = yid.asDate(data.key).valueOf()
         currentTs = timestamp - ( timestamp % periodMs )
+        console.log('doneTs:', doneTs)
         console.log('currentTs:', currentTs)
-        if (!oldTs) {
-          oldTs = currentTs
-          console.log('oldTs:', oldTs)
+        if (!doneTs) {
+          doneTs = currentTs
         }
-        if (currentTs !== oldTs) {
-          console.log(`${(new Date(oldTs)).toISOString()} @ ${period} -> ${oldTs}:`, aggregator.get())
-          const data = aggregator.get()
-          aggDb.put(oldTs, data)
+        if (currentTs === doneTs) {
+          aggregator.add(data.value)
+        }
+        else {
+          console.log('Putting aggregated data since the timestamp has changed ...')
+          const agg = aggregator.get()
+          console.log(` -> ${(new Date(doneTs)).toISOString()} @ ${period} -> ${doneTs}:`, agg)
+          aggDb.put(doneTs, agg)
           aggregator.reset()
-          oldTs = currentTs
+
+          // and finally, add this data in to the new timeframe
+          aggregator.add(data.value)
+
+          // remember this new timestamp as being the last done
+          doneTs = currentTs
         }
+        console.log()
       })
       .on('end', () => {
-        const data = aggregator.get()
-        aggDb.put(currentTs, data)
-        aggregator.reset()
+        console.log('Ended, getting the final data ...')
+        const agg = aggregator.get()
+        console.log('agg2:', agg)
+
+        // only put it if we have had some readings
+        if (agg.count > 0) {
+          aggDb.put(currentTs, agg)
+        }
       })
   }
 
