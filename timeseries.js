@@ -1,3 +1,6 @@
+// core
+const EventEmitter = require('events')
+
 // npm
 const level = require('level')
 const sublevel = require('subleveldown')
@@ -10,53 +13,57 @@ class TimeSeries {
   constructor(filename) {
     this.filename = filename;
     this.db = null
-    this.sub = {}
+    this.series = {}
   }
 
   open() {
     this.db = level(this.filename)
   }
 
-  ensureDbs(name) {
-    if (!this.sub[name]) {
-      const subDb = sublevel(this.db, name)
-      const valDb = sublevel(subDb, 'val', { valueEncoding: 'json' })
-      const aggDb = sublevel(subDb, 'agg')
-      this.sub[name] = {
-        subDb,
+  ensureDbs(seriesName) {
+    if (!this.series[seriesName]) {
+      const serDb = sublevel(this.db, seriesName)
+      const valDb = sublevel(serDb, 'val', { valueEncoding: 'json' })
+      const aggDb = sublevel(serDb, 'agg')
+      this.series[seriesName] = {
+        serDb,
         valDb,
         aggDb,
       }
     }
   }
 
-  getAggDb(name) {
-    this.ensureDbs(name)
-    return this.sub[name].aggDb
+  getValDb(seriesName) {
+    this.ensureDbs(seriesName)
+    return this.series[seriesName].valDb
   }
 
-  getValDb(name) {
-    this.ensureDbs(name)
-    return this.sub[name].valDb
+  getAggDb(seriesName) {
+    this.ensureDbs(seriesName)
+    return this.series[seriesName].aggDb
   }
 
-  addVal(name, value) {
-    this.addTsVal(name, new Date(), value)
+  getPerDb(seriesName, prettyPeriodMs) {
+    return sublevel(this.getAggDb(seriesName), prettyPeriodMs, { valueEncoding: 'json' })
   }
 
-  addTsVal(name, date, value) {
-    const valDb = this.getValDb(name)
+  addVal(seriesName, value) {
+    this.addTsVal(seriesName, new Date(), value)
+  }
+
+  addTsVal(seriesName, date, value) {
+    const valDb = this.getValDb(seriesName)
     const id = Date.now() + '-' + String(Math.random()).substr(2, 13)
     valDb.put(id, value)
   }
 
-  aggregateAll(name, period, aggregator) {
+  aggregateAll(seriesName, period, aggregator) {
     // figure out the period in MS
     const periodMs = ms(period)
     const prettyPeriodMs = prettyMs(periodMs)
 
-    const valDb = this.getValDb(name)
-    const aggDb = sublevel(this.getAggDb(name), prettyPeriodMs, { valueEncoding: 'json' })
+    const valDb = this.getValDb(seriesName)
+    const aggDb = this.getPerDb(seriesName, prettyPeriodMs)
 
     let doneTs = null
     let currentTs = null
@@ -100,6 +107,26 @@ class TimeSeries {
           aggDb.put(currentTs, agg)
         }
       })
+  }
+
+  streamAgg(seriesName, period) {
+    // figure out the period in MS
+    const periodMs = ms(period)
+    const prettyPeriodMs = prettyMs(periodMs)
+    const aggDb = this.getPerDb(seriesName, prettyPeriodMs)
+
+    const ee = new EventEmitter()
+    aggDb.createReadStream()
+      .on('data', data => {
+        ee.emit('data', {
+          ts: Number(data.key),
+          data: data.value,
+        })
+      })
+      .on('end', () => {
+        ee.emit('end')
+      })
+    return ee
   }
 
   dump(stream = process.stdin) {

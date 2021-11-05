@@ -21,13 +21,19 @@ const TimeSeries = require('level-timeseries')
 const gauge = require('level-timeseries/aggregator/gauge')
 
 const seriesName = 'temperature'
-const temperature = 21.4
 
 // add some temperature readings
-ts.addVal(seriesName, temperature)
+ts.addVal(seriesName, 21.4)
+ts.addVal(seriesName, 20.9)
+ts.addVal(seriesName, 20.5)
 
 // aggregate every hour to get min, max, count, and average
 ts.aggregateAll(seriesName, '1h', new Gauge())
+
+// loop over our aggregated values
+ts.streamAgg(seriesName, '1h')
+  .on('data', console.log)
+  .on('end', () => console.log('Done'))
 ```
 
 ## About ##
