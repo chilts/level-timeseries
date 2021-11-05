@@ -6,6 +6,13 @@ Built-in aggregators include:
 
 * Gauge
 * Counter
+* Set
+
+
+Inspiration gleaned from
+[Monitoring Statsd Metrics](https://sysdig.com/blog/monitoring-statsd-metrics/)
+and
+[Metric Types](https://github.com/statsd/statsd/blob/master/docs/metric_types.md).
 
 ## Synopsis ##
 
