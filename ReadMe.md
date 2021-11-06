@@ -6,8 +6,8 @@ Built-in aggregators include:
 
 * Gauge
 * Counter
+* Timer
 * Set
-
 
 Inspiration gleaned from
 [Monitoring Statsd Metrics](https://sysdig.com/blog/monitoring-statsd-metrics/)
@@ -22,12 +22,12 @@ const gauge = require('level-timeseries/aggregator/gauge')
 
 const seriesName = 'temperature'
 
-// add some temperature readings
-ts.addVal(seriesName, 21.4)
-ts.addVal(seriesName, 20.9)
-ts.addVal(seriesName, 20.5)
+// add some temperature observations
+ts.addObs(seriesName, 21.4)
+ts.addObs(seriesName, 20.9)
+ts.addObs(seriesName, 20.5)
 
-// aggregate every hour to get min, max, count, and average
+// aggregate every hour to get min, max, count, and mean
 ts.aggregateAll(seriesName, '1h', new Gauge())
 
 // loop over our aggregated values
