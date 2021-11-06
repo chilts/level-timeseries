@@ -2,7 +2,7 @@
 const tap = require('tap')
 
 // local
-const Counter = require('../lib/aggregator/counter.js')
+const Counter = require('../aggregator/counter.js')
 
 // tests
 tap.test(t => {

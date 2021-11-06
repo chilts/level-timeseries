@@ -2,7 +2,7 @@
 const tap = require('tap')
 
 // local
-const Set = require('../lib/aggregator/set.js')
+const Set = require('../aggregator/set.js')
 
 // tests
 tap.test(t => {

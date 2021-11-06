@@ -2,7 +2,7 @@
 const tap = require('tap')
 
 // local
-const Gauge = require('../lib/aggregator/gauge.js')
+const Gauge = require('../aggregator/gauge.js')
 
 // tests
 tap.test(t => {
