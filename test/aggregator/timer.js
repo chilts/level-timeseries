@@ -2,7 +2,7 @@
 const tap = require('tap')
 
 // local
-const Timer = require('../aggregator/timer.js')
+const Timer = require('../../aggregator/timer.js')
 
 // tests
 tap.test(t => {

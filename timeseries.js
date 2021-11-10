@@ -20,7 +20,13 @@ class TimeSeries {
     this.db = level(this.filename)
   }
 
-  ensureDbs(seriesName) {
+  close() {
+    this.filename = null
+    this.db.close()
+    this.series = {}
+  }
+
+  _ensureDbs(seriesName) {
     if (!this.series[seriesName]) {
       // create the sublevel for this entire series
       const serDb = sublevel(this.db, seriesName)
@@ -38,44 +44,48 @@ class TimeSeries {
     }
   }
 
-  getSeriesDb(seriesName) {
-    this.ensureDbs(seriesName)
+  _getSeriesDb(seriesName) {
+    this._ensureDbs(seriesName)
     return this.series[seriesName].serDb
   }
 
-  getObservationDb(seriesName) {
-    this.ensureDbs(seriesName)
+  _getObservationDb(seriesName) {
+    this._ensureDbs(seriesName)
     return this.series[seriesName].obsDb
   }
 
-  getAggregationDb(seriesName) {
-    this.ensureDbs(seriesName)
+  _getAggregationDb(seriesName) {
+    this._ensureDbs(seriesName)
     return this.series[seriesName].aggDb
   }
 
-  getIntervalDb(seriesName, period) {
+  _getIntervalDb(seriesName, period) {
     // figure out the period in MS
+    console.log('period:', period)
     const periodMs = ms(period)
+    console.log('periodMs:', periodMs)
     const prettyPeriodMs = prettyMs(periodMs)
-    const aggDb = this.getAggregationDb(seriesName)
+    console.log('prettyPeriodMs:', prettyPeriodMs)
+    const aggDb = this._getAggregationDb(seriesName)
     return sublevel(aggDb, prettyPeriodMs, { valueEncoding: 'json' })
   }
 
   addObs(seriesName, value) {
-    const obsDb = this.getObservationDb(seriesName)
+    const obsDb = this._getObservationDb(seriesName)
     const id = yid()
     obsDb.put(id, value)
   }
 
   addObsWithTimestamp(seriesName, date, value) {
-    const obsDb = this.getObservationDb(seriesName)
-    const id = Date.now() + '-' + String(Math.random()).substr(2, 13)
+    const obsDb = this._getObservationDb(seriesName)
+    // const id = (new Date(date)).valueOf() + '-' + String(Math.random()).substr(2, 13)
+    const id = yid.fromDate(new Date(date))
     obsDb.put(id, value)
   }
 
   aggregate(seriesName, period, aggregator, from, to) {
-    const obsDb = this.getObservationDb(seriesName)
-    const aggDb = this.getIntervalDb(seriesName, period)
+    const obsDb = this._getObservationDb(seriesName)
+    const aggDb = this._getIntervalDb(seriesName, period)
 
     const opts = {}
     if (from) {
@@ -92,6 +102,7 @@ class TimeSeries {
         console.log('data:', data)
 
         // check the timestamp
+        console.log('key:', data.key)
         const timestamp = yid.asDate(data.key).valueOf()
         const periodMs = ms(period)
         currentTs = timestamp - ( timestamp % periodMs )
@@ -140,10 +151,36 @@ class TimeSeries {
     return this.aggregate(seriesName, period, aggregator, date, null)
   }
 
+  // doesn't write to the DB, just returns the aggregation
+  aggregateRange(seriesName, aggregator, from, to) {
+    return new Promise((resolve, reject) => {
+      const obsDb = this._getObservationDb(seriesName)
+
+      const opts = { gte: from.valueOf(), lt: to.valueOf() }
+      return obsDb.createReadStream(opts)
+        .on('data', data => {
+          aggregator.add(data.value)
+        })
+        .on('end', () => {
+          const agg = aggregator.get()
+          if (!agg) {
+            // no readings, nothing to do
+            resolve(null)
+            return
+          }
+
+          // return the aggregated value
+          resolve(agg)
+        })
+        .on('error', reject)
+      ;
+    })
+  }
+
   async aggregateLatest(seriesName, period, aggregator) {
     console.log('aggregateLatest():', seriesName, period, aggregator)
-    const obsDb = this.getObservationDb(seriesName)
-    const intDb = this.getIntervalDb(seriesName, period)
+    const obsDb = this._getObservationDb(seriesName)
+    const intDb = this._getIntervalDb(seriesName, period)
 
     // get the last date from the aggregated values so we re-do it if new data has come in
     console.log('getting the last date ...')
@@ -161,7 +198,7 @@ class TimeSeries {
   async getLastAggregationDate(seriesName, period) {
     console.log('getLastAggregationDate():', seriesName, period)
     return new Promise((resolve, reject) => {
-      const intDb = this.getIntervalDb(seriesName, period)
+      const intDb = this._getIntervalDb(seriesName, period)
 
       let lastDate = null
       const s = intDb.createKeyStream({ reverse: true, limit: 1 })
@@ -181,8 +218,8 @@ class TimeSeries {
     })
   }
 
-  streamAgg(seriesName, period) {
-    const intDb = this.getIntervalDb(seriesName, period)
+  streamInterval(seriesName, period) {
+    const intDb = this._getIntervalDb(seriesName, period)
 
     const ee = new EventEmitter()
     intDb.createReadStream()

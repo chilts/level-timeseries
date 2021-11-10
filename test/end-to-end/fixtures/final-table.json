@@ -1,0 +1,202 @@
+{
+  "Manchester United": {
+    "played": 38,
+    "won": 19,
+    "drawn": 9,
+    "lost": 10,
+    "for": 65,
+    "against": 54,
+    "gd": 11,
+    "points": 66
+  },
+  "Leicester City": {
+    "played": 38,
+    "won": 15,
+    "drawn": 7,
+    "lost": 16,
+    "for": 51,
+    "against": 48,
+    "gd": 3,
+    "points": 52
+  },
+  "Newcastle United": {
+    "played": 38,
+    "won": 12,
+    "drawn": 9,
+    "lost": 17,
+    "for": 42,
+    "against": 48,
+    "gd": -6,
+    "points": 45
+  },
+  "Tottenham Hotspur": {
+    "played": 38,
+    "won": 23,
+    "drawn": 2,
+    "lost": 13,
+    "for": 67,
+    "against": 39,
+    "gd": 28,
+    "points": 71
+  },
+  "Watford": {
+    "played": 38,
+    "won": 14,
+    "drawn": 8,
+    "lost": 16,
+    "for": 52,
+    "against": 59,
+    "gd": -7,
+    "points": 50
+  },
+  "Brighton & Hove Albion": {
+    "played": 38,
+    "won": 9,
+    "drawn": 9,
+    "lost": 20,
+    "for": 35,
+    "against": 60,
+    "gd": -25,
+    "points": 36
+  },
+  "Huddersfield Town": {
+    "played": 38,
+    "won": 3,
+    "drawn": 7,
+    "lost": 28,
+    "for": 22,
+    "against": 76,
+    "gd": -54,
+    "points": 16
+  },
+  "Chelsea": {
+    "played": 38,
+    "won": 21,
+    "drawn": 9,
+    "lost": 8,
+    "for": 63,
+    "against": 39,
+    "gd": 24,
+    "points": 72
+  },
+  "Fulham": {
+    "played": 38,
+    "won": 7,
+    "drawn": 5,
+    "lost": 26,
+    "for": 34,
+    "against": 81,
+    "gd": -47,
+    "points": 26
+  },
+  "Crystal Palace": {
+    "played": 38,
+    "won": 14,
+    "drawn": 7,
+    "lost": 17,
+    "for": 51,
+    "against": 53,
+    "gd": -2,
+    "points": 49
+  },
+  "AFC Bournemouth": {
+    "played": 38,
+    "won": 13,
+    "drawn": 6,
+    "lost": 19,
+    "for": 56,
+    "against": 70,
+    "gd": -14,
+    "points": 45
+  },
+  "Cardiff City": {
+    "played": 38,
+    "won": 10,
+    "drawn": 4,
+    "lost": 24,
+    "for": 34,
+    "against": 69,
+    "gd": -35,
+    "points": 34
+  },
+  "Wolverhampton Wanderers": {
+    "played": 38,
+    "won": 16,
+    "drawn": 9,
+    "lost": 13,
+    "for": 47,
+    "against": 46,
+    "gd": 1,
+    "points": 57
+  },
+  "Everton": {
+    "played": 38,
+    "won": 15,
+    "drawn": 9,
+    "lost": 14,
+    "for": 54,
+    "against": 46,
+    "gd": 8,
+    "points": 54
+  },
+  "Southampton": {
+    "played": 38,
+    "won": 9,
+    "drawn": 12,
+    "lost": 17,
+    "for": 45,
+    "against": 65,
+    "gd": -20,
+    "points": 39
+  },
+  "Burnley": {
+    "played": 38,
+    "won": 11,
+    "drawn": 7,
+    "lost": 20,
+    "for": 45,
+    "against": 68,
+    "gd": -23,
+    "points": 40
+  },
+  "Liverpool": {
+    "played": 38,
+    "won": 30,
+    "drawn": 7,
+    "lost": 1,
+    "for": 89,
+    "against": 22,
+    "gd": 67,
+    "points": 97
+  },
+  "West Ham United": {
+    "played": 38,
+    "won": 15,
+    "drawn": 7,
+    "lost": 16,
+    "for": 52,
+    "against": 55,
+    "gd": -3,
+    "points": 52
+  },
+  "Arsenal": {
+    "played": 38,
+    "won": 21,
+    "drawn": 7,
+    "lost": 10,
+    "for": 73,
+    "against": 51,
+    "gd": 22,
+    "points": 70
+  },
+  "Manchester City": {
+    "played": 38,
+    "won": 32,
+    "drawn": 2,
+    "lost": 4,
+    "for": 95,
+    "against": 23,
+    "gd": 72,
+    "points": 98
+  }
+}

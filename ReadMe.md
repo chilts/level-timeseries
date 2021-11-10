@@ -36,6 +36,73 @@ ts.streamAgg(seriesName, '1h')
   .on('end', () => console.log('Done'))
 ```
 
+## Aggregators ##
+
+### counter ###
+
+```
+const TimeSeries = require('level-timeseries')
+const counter = require('level-timeseries/aggregator/counter')
+
+// setup
+const ts = new TimeSeries('data.db')
+ts.open()
+const name = 'logins'
+
+// add some login observations
+ts.addObs(name, 5)
+
+// some time later
+ts.addObs(name, 1)
+
+// some more time later
+ts.addObs(name, 19)
+
+// aggregate every day to get count and total
+ts.aggregateAll(seriesName, '1d', new Counter())
+
+// loop over our aggregated values
+ts.streamAgg(seriesName, '1h')
+  .on('data', console.log)
+  .on('end', () => console.log('Done'))
+
+// tidy up
+ts.close()
+```
+
+### gauge ###
+
+ToDo: ... !!!
+
+### timer ###
+
+ToDo: ... !!!
+
+### set ###
+
+ToDo: ... !!!
+
+## Creating your own Aggregator ##
+
+Whilst `level-timeseries` comes with a few built-in aggregators, it's very easy
+to create your own.
+
+Here are some examples you can go and study.
+
+### Example: Premier League Table ###
+
+In the tests, there is an example of a Premier League aggregator which takes
+each observation (i.e. a game result) and builds up a table of standings. By
+aggregating over a specific period of time - Aug 2019 until May 2020 - we
+process all 380 observations (20 teams, each playing 38 games) and give each
+team win/drawn/loss, goals for/against/difference, and of course points.
+
+Please see the GitHub repo for more details. ToDo: ... !!!
+
+### Example: Candlestick charts for Trading ###
+
+ToDo: ... !!!
+
 ## About ##
 
 
