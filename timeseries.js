@@ -1,5 +1,6 @@
 // core
 const EventEmitter = require('events')
+const crypto = require('crypto')
 
 // npm
 const level = require('level')
@@ -244,6 +245,24 @@ class TimeSeries {
       .on('error', function (err) {
         console.log('Error:', err)
       })
+  }
+
+  hash(seriesName) {
+    return new Promise((resolve, reject) => {
+      const hash = crypto.createHash('sha1')
+      const obsDb = this._getObservationDb(seriesName)
+      return obsDb.createReadStream()
+        .on('data', data => {
+          const str = data.key + ' = ' + JSON.stringify(data.value) + '\n'
+          console.log(str)
+          hash.update(str)
+        })
+        .on('end', () => {
+          resolve(hash.digest('hex'))
+        })
+        .on('error', reject)
+      ;
+    })
   }
 }
 
