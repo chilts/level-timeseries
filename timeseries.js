@@ -74,14 +74,19 @@ class TimeSeries {
   addObs(seriesName, value) {
     const obsDb = this._getObservationDb(seriesName)
     const id = yid()
-    obsDb.put(id, value)
+    return obsDb.put(id, value)
   }
 
   addObsWithTimestamp(seriesName, date, value) {
     const obsDb = this._getObservationDb(seriesName)
-    // const id = (new Date(date)).valueOf() + '-' + String(Math.random()).substr(2, 13)
     const id = yid.fromDate(new Date(date))
-    obsDb.put(id, value)
+    return obsDb.put(id, value)
+  }
+
+  // for testing purposes, to test the `hash()` stuff
+  _addObsWithId(seriesName, id, value) {
+    const obsDb = this._getObservationDb(seriesName)
+    return obsDb.put(id, value)
   }
 
   aggregate(seriesName, period, aggregator, from, to) {
