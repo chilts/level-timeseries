@@ -253,13 +253,23 @@ class TimeSeries {
   }
 
   hash(seriesName) {
+    return this.hashFromTo(seriesName)
+  }
+
+  hashFromTo(seriesName, from, to) {
+    const opts = {}
+    if (from) {
+      opts.gte = (new Date(from)).valueOf()
+    }
+    if (to) {
+      opts.lt = (new Date(to)).valueOf()
+    }
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash('sha1')
       const obsDb = this._getObservationDb(seriesName)
-      return obsDb.createReadStream()
+      return obsDb.createReadStream(opts)
         .on('data', data => {
           const str = data.key + ' = ' + JSON.stringify(data.value) + '\n'
-          console.log(str)
           hash.update(str)
         })
         .on('end', () => {
@@ -268,6 +278,12 @@ class TimeSeries {
         .on('error', reject)
       ;
     })
+  }
+
+  hashPeriod(seriesName, from, period) {
+    const periodMs = ms(period)
+    const to = (new Date(from)).valueOf() + periodMs
+    return this.hashFromTo(seriesName, from, to)
   }
 }
 
