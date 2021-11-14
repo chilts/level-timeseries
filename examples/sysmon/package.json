@@ -1,0 +1,15 @@
+{
+  "name": "sysmon",
+  "version": "1.0.0",
+  "description": "This system monitor uses two programs, one to collect the data and ping it to MQTT, the other to listen to it and put it into a TimeSeries database.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "level-timeseries": "^0.4.0",
+    "mqtt": "^4.2.8"
+  }
+}

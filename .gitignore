@@ -1,7 +1,10 @@
-/node_modules/
-/.nyc_output/
+node_modules
+.nyc_output
+
+package-lock.json
 
 *.db
+*.tgz
 
 *.log
 *~
