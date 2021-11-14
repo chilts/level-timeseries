@@ -1,6 +1,7 @@
 // npm
 const mqtt = require('mqtt')
 const TimeSeries = require('level-timeseries')
+const chalk = require('chalk')
 
 // setup
 const client = mqtt.connect('mqtt://localhost')
@@ -21,26 +22,26 @@ client.on('connect', () => {
 })
 
 client.on('message', (topic, message, packet) => {
-  console.log((new Date()).toISOString() + ':')
-  // console.log(`  ${message.toString()}`)
-
   const msg = JSON.parse(message.toString())
-  console.log('msg.data:', msg.data)
-  console.log(' * process:', msg.process)
-  console.log(' * memory:')
-  console.log(' *   rss:', msg.data.memory.rss)
-  console.log(' *   heapTotal:', msg.data.memory.heapTotal)
-  console.log(' *   heapUsed:', msg.data.memory.heapUsed)
-  console.log(' *   external:', msg.data.memory.external)
-  console.log(' *   arrayBuffers:', msg.data.memory.arrayBuffers)
-  console.log(' * cpu:')
-  console.log(' *   user:', msg.data.cpu.user)
-  console.log(' *   system:', msg.data.cpu.system)
+  const process = msg.process
+  delete msg.process
+
+  console.log(chalk.green(chalk.green(process)) + ' : ' + chalk.yellow((new Date()).toISOString()))
+  console.log(chalk.grey('  ' + JSON.stringify(msg)))
+  console.log('  * memory:')
+  console.log('  *   rss:', msg.memory.rss)
+  console.log('  *   heapTotal:', msg.memory.heapTotal)
+  console.log('  *   heapUsed:', msg.memory.heapUsed)
+  console.log('  *   external:', msg.memory.external)
+  console.log('  *   arrayBuffers:', msg.memory.arrayBuffers)
+  console.log('  * cpu:')
+  console.log('  *   user:', msg.cpu.user)
+  console.log('  *   system:', msg.cpu.system)
+  console.log()
 
   // write out these stats to the correct process
-  ts.addObs(msg.process, msg.data)
+  ts.addObs(process, msg)
 
-  console.log()
 })
 
 // ToDo: aggregate stats every 1m, 5m, and 15m.

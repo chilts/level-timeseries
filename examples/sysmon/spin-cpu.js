@@ -19,7 +19,7 @@ client.on('connect', connack => {
 
     console.log('Gathering stats ...')
     const stats = getStats('spin-cpu')
-    console.log('cpu.user=' + stats.data.cpu.user)
+    console.log('cpu.user=' + stats.cpu.user)
     client.publish(queue, JSON.stringify(stats))
     console.log('Published')
   }, 5 * 1000)

@@ -37,7 +37,7 @@ client.on('connect', connack => {
 
     console.log('Gathering stats ...')
     const stats = getStats('use-memory')
-    console.log('heapUsed=' + stats.data.memory.heapUsed)
+    console.log('heapUsed=' + stats.memory.heapUsed)
     client.publish(queue, JSON.stringify(stats))
     console.log('Published')
 
